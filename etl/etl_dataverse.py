@@ -4,7 +4,7 @@ from pandera import Check, Column
 from pandera.engines import pandas_engine
 from shared.logger import logger
 from clients.DataverseClient import Dataverse
-from database.ProjectPlanning_repository import ProjectPlanning_repository
+from database.repositories.ProjectPlanning_repository import ProjectPlanning_repository
 from constants.logger_messages import (
     ETL_DATAVERSE_LOGGER_EXTRACT,
     ETL_DATAVERSE_LOGGER_TRANSFORM,

@@ -33,7 +33,9 @@ class Clockify:
         response = requests.get(url, headers=self.headers)
         response.raise_for_status()
         projects = pd.DataFrame(response.json())
-        projects = projects.loc[~projects['archived']]
+        projects = projects.loc[(~projects['archived']) & 
+                                (projects['name'].str.contains('Modernization')) & 
+                                (~projects['name'].str.contains('Academy'))]
         return projects[columns]
 
     @logger(CLOCKIFY_LOGGER_ACTIVE_USERS)

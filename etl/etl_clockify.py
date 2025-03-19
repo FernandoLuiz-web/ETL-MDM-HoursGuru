@@ -4,7 +4,7 @@ from pandera import Check, Column
 from pandera.engines import pandas_engine
 from shared.logger import logger
 from clients.ClockifyClient import Clockify
-from database.AppointedHours_repository import AppointedHours_repository
+from database.repositories.AppointedHours_repository import AppointedHours_repository
 from constants.logger_messages import (
     ETL_CLOCKIFY_LOGGER_GET_ACTIVE_PROJECTS_ID,
     ETL_CLOCKIFY_LOGGER_GET_APPOINTMENTS_PER_DAY,

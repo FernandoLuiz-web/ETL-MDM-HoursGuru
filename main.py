@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from database.AppointedHours_repository import AppointedHours_repository
-from database.ProjectPlanning_repository import ProjectPlanning_repository
+from database.repositories.AppointedHours_repository import AppointedHours_repository
+from database.repositories.ProjectPlanning_repository import ProjectPlanning_repository
 from database.db_connection import DatabaseConnection
 from clients.ClockifyClient import Clockify
 from clients.DataverseClient import Dataverse
@@ -15,7 +15,7 @@ def data_runs(start: str) -> list[str]:
     return [(start_date + timedelta(days=i)).strftime(format_date) for i in range((today - start_date).days + 1)]
 
 def main():
-    datas = data_runs("2025-01-22")
+    datas = data_runs(str(datetime.today().date().replace(day=1)))
     db_conn = DatabaseConnection()
 
     db_conn.connect()

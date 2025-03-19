@@ -18,7 +18,9 @@ class Dataverse:
         """
         data = self._fetch_project_plannings()
         df = pd.DataFrame(data)[self._columns()]
+        df = df.loc[df['premsoft_projectplanningmonthlyname'].str.contains('Modernization')]
         df.rename(columns=self._rename_columns(), inplace=True)
+        df = df.drop('premsoft_projectplanningmonthlyname', axis=1)
         return df
     
     def _fetch_project_plannings(self) -> list:
@@ -34,6 +36,7 @@ class Dataverse:
     def _columns() -> list:
         return [
             'premsoft_projectplanningmonthlyid',
+            'premsoft_projectplanningmonthlyname',
             '_premsoft_project_value@OData.Community.Display.V1.FormattedValue',
             'premsoft_datestart',
             'premsoft_dateend',
