@@ -1,7 +1,7 @@
 import os
 import requests
 import pandas as pd
-from shared.logger import logger
+from shared.logger import info, error
 from dotenv import load_dotenv
 from pandas import json_normalize
 from constants.endpoints import CLOCKIFY_API, CLOCKIFY_REPORTS
@@ -25,30 +25,38 @@ class Clockify:
     def headers(self) -> dict:
         return self.__HEADERS
 
-    @logger(CLOCKIFY_LOGGER_PROJECTS)
     def get_workspace_active_projects(self) -> pd.DataFrame:
         """Obtém projetos do Clockify e retorna como DataFrame."""
+        info(CLOCKIFY_LOGGER_PROJECTS)
         columns = ['id', 'name', 'clientId', 'clientName', 'billable']
         url = f"{CLOCKIFY_API}/projects?{self.__PAGE_SIZE}"
-        response = requests.get(url, headers=self.headers)
-        response.raise_for_status()
-        projects = pd.DataFrame(response.json())
-        projects = projects.loc[(~projects['archived']) & 
-                                (projects['name'].str.contains('Modernization')) & 
-                                (~projects['name'].str.contains('Academy'))]
-        return projects[columns]
+        try:
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
+            projects = pd.DataFrame(response.json())
+            projects = projects.loc[(~projects['archived']) & 
+                                    (projects['name'].str.contains('Modernization')) & 
+                                    (~projects['name'].str.contains('Academy'))]
+            return projects[columns]
+        except requests.exceptions.RequestException as e:
+            error(f"Erro ao obter projetos do Clockify: {e}")
+            return pd.DataFrame(columns=columns)
 
-    @logger(CLOCKIFY_LOGGER_ACTIVE_USERS)
     def get_workspace_users(self) -> pd.DataFrame:
         """Obtém os usuários do workspace do Clockify."""
-        url = f"{CLOCKIFY_API}/users?page-size=5000"
-        response = requests.get(url, headers=self.headers)
-        response.raise_for_status()
+        info(CLOCKIFY_LOGGER_ACTIVE_USERS)
+        try:
+            url = f"{CLOCKIFY_API}/users?page-size=5000"
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            error(f"Erro ao obter usuários do Clockify: {e}")
+            return pd.DataFrame()
         return pd.DataFrame(response.json())
 
-    @logger(CLOCKIFY_LOGGER_APPOINTMENTS)
     def get_reports_detailed(self, project_id: list, dateStart: str, dateEnd: str):
         """Gera um relatório detalhado de time entries por projetos."""
+        info(CLOCKIFY_LOGGER_APPOINTMENTS)
         dateStart = f"{dateStart}T00:00:00.000Z"
         dateEnd = f"{dateEnd}T23:59:59.999Z"
         if isinstance(project_id, pd.Series):
@@ -89,5 +97,6 @@ class Clockify:
             response.raise_for_status()
             return json_normalize(response.json()['timeentries'])
         except requests.exceptions.RequestException as e:
+            error(f"Erro ao obter relatórios detalhados: {e}")
             print(f"Erro na requisição: {e}")
             return pd.DataFrame()

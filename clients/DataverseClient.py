@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-from shared.logger import logger
+from shared.logger import info, error
 from constants.endpoints import EXPORTS_PROJECTPLANNING
 from constants.logger_messages import DATAVERSE_LOGGER_PROJECTS_PLANNING
 
@@ -11,11 +11,11 @@ class Dataverse:
     def __init__(self, base_url: str = EXPORTS_PROJECTPLANNING):
         self.base_url = base_url
 
-    @logger(DATAVERSE_LOGGER_PROJECTS_PLANNING)
     def get_project_plannings_df(self) -> pd.DataFrame:
         """
         Retorna os registros de planejamento de projetos como um DataFrame.
         """
+        info(DATAVERSE_LOGGER_PROJECTS_PLANNING)
         data = self._fetch_project_plannings()
         df = pd.DataFrame(data)[self._columns()]
         df = df.loc[df['premsoft_projectplanningmonthlyname'].str.contains('Modernization')]
