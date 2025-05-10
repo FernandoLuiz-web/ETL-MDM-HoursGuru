@@ -1,4 +1,8 @@
 import contextvars
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from flows.dataverse_flow import dataverse_flow
 from flows.clockify_flow import clockify_flow
 from concurrent.futures import ThreadPoolExecutor

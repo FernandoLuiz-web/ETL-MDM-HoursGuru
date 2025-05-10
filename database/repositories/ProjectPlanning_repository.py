@@ -2,19 +2,21 @@ import json
 from typing import Union
 from database.db_connection import DatabaseConnection
 from constants.Database_objects import COLLECTION_NAME_PPLANNINGS
+from constants.logger_messages import (
+    GET_ALL_PPLANNING_LOGGER_MSG,
+    GET_PPLANNING_FOR_ID_LOGGER_MSG,
+    INSERT_NEW_PPLANNINGS_LOGGER_MSG,
+    DELETE_ALL_PPLANNING_LOGGER_MSG
+)
 from shared.logger import info, error
 
 class ProjectPlanning_repository:
-    __GET_ALL_PPLANNING_LOGGER_MSG = "Requisição para obter todos os planejamentos de projetos."
-    __INSERT_NEW_PPLANNINGS_LOGGER_MSG = "Inserindo novos registros de planejamento no banco de dados."
-    __DELETE_ALL_PPLANNING_LOGGER_MSG = "Deletando todos os planejamentos de projetos do banco de dados."
-
     def __init__(self, db_connection: DatabaseConnection):
         self.db_connection = db_connection
         self.collection = db_connection.get_collection(COLLECTION_NAME_PPLANNINGS)
     
     def get_all_pplaning(self) -> Union[list, str]:
-        info(self.__GET_ALL_PPLANNING_LOGGER_MSG)
+        info(GET_ALL_PPLANNING_LOGGER_MSG)
         response: object
         try:
             response = list(self.collection.find())
@@ -23,8 +25,17 @@ class ProjectPlanning_repository:
             response = json.loads({"Erro": str(e)})
         return response
     
+    def get_pplanning_for_id(self, id: str):
+        info(GET_PPLANNING_FOR_ID_LOGGER_MSG)
+        response: dict
+        try:
+            response = json.dumps(self.collection.find_one({'planning_id': id}), indent=3)
+        except Exception as e:
+            response = json.dumps({"Erro": str(e)})
+        return response
+    
     def insert_new_plannings(self, plannings: dict):
-        info(self.__INSERT_NEW_PPLANNINGS_LOGGER_MSG)
+        info(INSERT_NEW_PPLANNINGS_LOGGER_MSG)
         response: dict
         try:
             self.collection.insert_many(plannings)
@@ -35,7 +46,7 @@ class ProjectPlanning_repository:
         return json.dumps(response)
     
     def delete_plannings(self):
-        info(self.__DELETE_ALL_PPLANNING_LOGGER_MSG)
+        info(DELETE_ALL_PPLANNING_LOGGER_MSG)
         response: dict
         try:
             self.collection.delete_many({})

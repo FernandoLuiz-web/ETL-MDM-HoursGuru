@@ -4,7 +4,7 @@ from clients.DataverseClient import Dataverse
 from constants.logger_messages import ETL_DATAVERSE_LOGGER_RUN
 from database.db_connection import DatabaseConnection
 from database.repositories.ProjectPlanning_repository import ProjectPlanning_repository
-from etl.etl_dataverse import Etl_dataverse
+from logic.etl_dataverse import Etl_dataverse
 from shared.logger import info
 
 @flow(task_runner=ConcurrentTaskRunner())

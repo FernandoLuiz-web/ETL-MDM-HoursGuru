@@ -5,7 +5,7 @@ from clients.ClockifyClient import Clockify
 from constants.logger_messages import ETL_CLOCKIFY_LOGGER_RUN
 from database.db_connection import DatabaseConnection
 from database.repositories.AppointedHours_repository import AppointedHours_repository
-from etl.etl_clockify import Etl_clockify
+from logic.etl_clockify import Etl_clockify
 from shared.logger import info
 
 def data_runs() -> list[str]:
