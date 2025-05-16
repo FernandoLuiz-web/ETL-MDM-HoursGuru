@@ -1,0 +1,3 @@
+MLFLOW_TRACKING_URI="http://127.0.0.1:5000"
+MLFLOW_EXPERIMENT_ID="1"
+MODEL_NAME="RandomForestRegressor_HoursGuru"

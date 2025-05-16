@@ -1,21 +1,8 @@
 name: hours_guru
 
 services:
-  prefect:
-    image: prefecthq/prefect:2-latest
-    container_name: prefect
-    command: prefect server start
-    ports:
-      - "4200:4200" # Prefect UI
-      - "4201:4201" # GraphQL API
-      - "4202:4202" # Orchestration API
-    environment:
-      PREFECT_ORION_UI_API_URL: "http://localhost:4200/api"
-    volumes:
-      - prefect_storage:/root/.prefect
-
   mlflow:
-    image: mlflow/mlflow:latest
+    image: ghcr.io/mlflow/mlflow
     container_name: mlflow
     command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlflow/artifacts --host 0.0.0.0
     ports:
@@ -26,5 +13,5 @@ services:
       MLFLOW_TRACKING_URI: "http://localhost:5000"
 
 volumes:
-  prefect_storage:
+  db:
   mlflow_data:
